@@ -35,34 +35,37 @@ def pdf_to_document(uploaded_file):
 
 # 업로드 되면 동작하는 코드 
 if uploaded_file is not None:
-    pages = pdf_to_document(uploaded_file)
+    with st.spinner("PDF를 분석하는 중입니다... (파일 크기에 따라 시간이 걸릴 수 있어요)"):
+        pages = pdf_to_document(uploaded_file)
 
-    #splitter
-    text_splitter = RecursiveCharacterTextSplitter(
-        # Set a really small chunk size, just to show.
-        chunk_size = 500,
-        chunk_overlap = 50,
-        length_function = len,
-        is_separator_regex = False,
-    )
-
-    texts = text_splitter.split_documents(pages)
-
-    #embedding
-    embeddings_model = OpenAIEmbeddings()
-
-    # load it into Chroma
-    db = Chroma.from_documents(
-        documents=texts, 
-        embedding=embeddings_model
+        #splitter
+        text_splitter = RecursiveCharacterTextSplitter(
+            # Set a really small chunk size, just to show.
+            chunk_size = 500,
+            chunk_overlap = 50,
+            length_function = len,
+            is_separator_regex = False,
         )
 
+        texts = text_splitter.split_documents(pages)
+
+        #embedding
+        embeddings_model = OpenAIEmbeddings()
+
+        # load it into Chroma
+        db = Chroma.from_documents(
+            documents=texts, 
+            embedding=embeddings_model
+            )
+
+    st.success("PDF 분석 완료!")
+    
     #Question
     st.header("PDF 질문하기")
     question = st.text_input("질문을 입력해주세요")
 
     if st.button("질문하기"):
-        with st.spinner("답변을 생성하는 중입니다..."):
+       with st.spinner("답변을 생성하는 중입니다..."):
             llm = ChatOpenAI(
                 model_name="gpt-3.5-turbo",
                 temperature=0,
