@@ -20,6 +20,9 @@ from langchain_classic.chains import RetrievalQA
 st.title("ChatPDF")
 st.write("---")
 
+#OpenAI API Key 입력
+api_key = st.text_input("OpenAI API Key를 입력해주세요", type="password")
+
 #파일 업로드
 uploaded_file = st.file_uploader("파일을 올려주세요", type=["pdf"])
 st.write("---")
@@ -50,7 +53,7 @@ if uploaded_file is not None:
         texts = text_splitter.split_documents(pages)
 
         #embedding
-        embeddings_model = OpenAIEmbeddings()
+        embeddings_model = OpenAIEmbeddings(openai_api_key=api_key, model="text-embedding-3-small")
 
         # load it into Chroma
         db = Chroma.from_documents(
@@ -69,6 +72,7 @@ if uploaded_file is not None:
             llm = ChatOpenAI(
                 model_name="gpt-3.5-turbo",
                 temperature=0,
+                openai_api_key=api_key
             )
             qa_chain = RetrievalQA.from_chain_type(
                 llm=llm,
