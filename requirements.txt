@@ -4,3 +4,4 @@ openai
 chromadb
 python-dotenv
 tiktoken
+pysqlite3-binary
