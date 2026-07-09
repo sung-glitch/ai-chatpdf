@@ -14,7 +14,9 @@ import streamlit as st
 import tempfile
 import os
 from langchain_classic.chains import RetrievalQA
+from streamlit_extras.buy_me_a_coffee import *
 
+button(username="fake-username", floating=False, width=221)
 
 # 제목
 st.title("ChatPDF")
