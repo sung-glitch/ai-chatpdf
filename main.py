@@ -45,6 +45,7 @@ if uploaded_file is not None:
         length_function = len,
         is_separator_regex = False,
     )
+
     texts = text_splitter.split_documents(pages)
 
     #embedding
@@ -61,18 +62,16 @@ if uploaded_file is not None:
     question = st.text_input("질문을 입력해주세요")
 
     if st.button("질문하기"):
-        llm = ChatOpenAI(
-            model_name="gpt-3.5-turbo",
-            temperature=0,
-        )
-        qa_chain = RetrievalQA.from_chain_type(
-            llm=llm,
-            chain_type="stuff",
-            retriever=db.as_retriever(),
-            return_source_documents=True
-        )
-        result = qa_chain.invoke({"query": question})
-        st.write(result["result"])
-
-
-    
+        with st.spinner("답변을 생성하는 중입니다..."):
+            llm = ChatOpenAI(
+                model_name="gpt-3.5-turbo",
+                temperature=0,
+            )
+            qa_chain = RetrievalQA.from_chain_type(
+                llm=llm,
+                chain_type="stuff",
+                retriever=db.as_retriever(),
+                return_source_documents=True
+            )
+            result = qa_chain.invoke({"query": question})
+            st.write(result["result"])
